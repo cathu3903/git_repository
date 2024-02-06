@@ -114,14 +114,14 @@
 //'C'/67/0x43? Informations sur le dernier capteur touche :
 //  8 bits de poids faible? numero du capteur
 //  8 bits de poids fort? couleur ('C','R','J','B' ou 'V')
-//'J'/74/0x4A : Proposition d'un code de d??ouillage. 
+//'J'/74/0x4A : Proposition d'un code de d??ouillage.
 //				Une valeur de 0 ?5 par quartet
-//'j'/106/06A : R?up?ation du r?ultat de dernier code envoy? 
-//				0x77 si aucun code n'a ??soumis. 
+//'j'/106/06A : R?up?ation du r?ultat de dernier code envoy?
+//				0x77 si aucun code n'a ??soumis.
 //				<0 si la r?onse n'est pas
 //				disponible. 0x0a0b avec a-> nombre de couleurs bien plac?s et b -> couleurs pr?entes mais mal plac?s.
 //'I'/73/Ox49 : D?inition du nom du v?icule. Doit d?uter par le caract?e '#' et entraine le chargement de la configuration de piste
-//                      
+//
 
 /*
 Temps mis pour faire un tour: 23s
@@ -136,21 +136,21 @@ void tourelle()
     short erreur;
 	short tourelle;
 	short k = 1;
-	
+
 	periph[ADDR('R')].ev=0x01;
-    while(1){   
-   
+    while(1){
+
 	    demande.data.id='R';
 	    demande.data.rtr=1;
 	    snd_dtq(CanTx,demande.msg);
-            
+
 	    wai_flg(ev_periph, 0x01, TWF_ANDW, &flag);
-	    clr_flg(ev_periph,~((flag & 0x01)));        
+	    clr_flg(ev_periph,~((flag & 0x01)));
 	    tourelle=periph[ADDR('R')].val;
-             
+
 	    erreur=k*(450-tourelle);
-   
-    
+
+
 	    comm.data.id='T';
 	    comm.data.rtr=0;
 	    comm.data.val=erreur;
@@ -158,7 +158,7 @@ void tourelle()
 
 	}
 }
-void direction()
+/* void direction()
 {
     UINT flag;
 	CanFrame demande;
@@ -166,32 +166,32 @@ void direction()
 	short ecart;
 	short commende;
 	short reponse;
-	
+
     periph[ADDR('U')].ev=0x02;
-	while(1){ 
+	while(1){
 		demande.data.id='U';
 	    demande.data.rtr=1;
-	    snd_dtq(CanTx,demande.msg);  
-            
+	    snd_dtq(CanTx,demande.msg);
+
 	    wai_flg(ev_periph, 0x02, TWF_ANDW, &flag);
-	    clr_flg(ev_periph,~((flag & 0x02)));       
-            
+	    clr_flg(ev_periph,~((flag & 0x02)));
+
 	    reponse = periph[ADDR('U')].val;
-                  
+
 	    ecart = reponse - 707;
-    
-    
+
+
 	    comm.data.id='D';
 	    comm.data.rtr=0;
 	    comm.data.val=ecart;
 	    snd_dtq(CanTx,comm.msg);
 	}
 
-}
+} */
 
 void vitesse(){
 	CanFrame demande;
-   	while(1){   
+   	while(1){
 	    demande.data.id = 'V';
 		demande.data.rtr = 0;
 		demande.data.val = 40;
@@ -202,7 +202,7 @@ void vitesse(){
 
 void main()
 {
-        
+
     ports_mcu();
     lcd_init();
 	periph_init();
@@ -211,15 +211,15 @@ void main()
     can_init();
     clavier_init(1);
 	capture_init();
-	
+
 	sta_cyc(ID_acqui);
 	sta_tsk(ID_periph_rx);
   	sta_tsk(ID_tourelle);
 	dly_tsk(1000);
     sta_tsk(ID_direction);
-    sta_tsk(ID_vitesse);  
-	
-                                
+    sta_tsk(ID_vitesse);
+
+
 }
 
 void acqui()
